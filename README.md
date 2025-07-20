@@ -14,46 +14,7 @@ The Pothole Detector is an Android application designed to detect potholes using
 
 ## How it Works (Core Detection Flow)
 
-```plantuml
-@startuml
-actor User
-participant MainActivity
-participant PotholeDetectionService
-participant AccelerometerSensor
-participant LocationService
-participant DetectionsFile
-participant DeviceVibrator
-
-User -> MainActivity: Starts "Start Detection"
-MainActivity -> PotholeDetectionService: startForegroundService()
-PotholeDetectionService -> PotholeDetectionService: createNotificationChannel()
-PotholeDetectionService -> PotholeDetectionService: startForeground() (persistent notification)
-PotholeDetectionService -> AccelerometerSensor: registerListener()
-AccelerometerSensor --> PotholeDetectionService: onSensorChanged(event) (continuous data)
-
-loop Sensor Data Processing
-    PotholeDetectionService -> PotholeDetectionService: Calculate acceleration change (X, Y, Z)
-    PotholeDetectionService -> PotholeDetectionService: Apply Z-axis weight
-    PotholeDetectionService -> PotholeDetectionService: Check against sensitivity threshold
-    alt Pothole Detected
-        PotholeDetectionService -> LocationService: getLastLocation()
-        LocationService --> PotholeDetectionService: Location data (or null)
-        PotholeDetectionService -> PotholeDetectionService: Determine severity (MILD, MODERATE, SEVERE)
-        PotholeDetectionService -> DetectionsFile: saveDetectionToFile(detectionInfo)
-        PotholeDetectionService -> PotholeDetectionService: updateNotification(severity)
-        PotholeDetectionService -> DeviceVibrator: vibrateDevice(severity)
-        PotholeDetectionService -> MainActivity: sendBroadcast("POTHOLE_DETECTED", detectionInfo, count)
-        MainActivity -> MainActivity: onReceive() (BroadcastReceiver)
-        MainActivity -> MainActivity: updateDetectionsDisplay() (UI update)
-    end
-end
-
-User -> MainActivity: Stops "Stop Detection"
-MainActivity -> PotholeDetectionService: stopService()
-PotholeDetectionService -> AccelerometerSensor: unregisterListener()
-PotholeDetectionService -> PotholeDetectionService: stopForeground(true)
-@enduml
-```
+<img width="3840" height="3323" alt="image" src="https://github.com/user-attachments/assets/fb393e2f-1023-4c63-8f9d-0b1edaeba794" />
 
 ## Permissions
 The application requires the following permissions:
